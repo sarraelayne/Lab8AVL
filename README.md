@@ -1,109 +1,38 @@
-# avllab
-Here is working code from Chapter 11 of the text.  You will need to modify it to match the specifications in the AVL Lab, but this should give you an idea of what you need to do. 
+# Lab8-AVL
 
-From Koffman, Elliot B. (2011-12-01). Objects, Abstraction, Data Structures and Design: Using C++. Wiley Higher Ed. Kindle Edition.
+## Purpose
+This lab assignment focuses on self-balancing binary search trees.
 
-I have removed the template nature of the code so it only works for integers.  You can go back to the original code if you want to generalize your implementation to other data types.  I have also modified the book code so that you can include it directly into your lab implementation.  I hope this will save you time in debugging, but you may wish to ignore this code altogether and start from scratch with your own BST implementation.
+## Background
+In computer science, an AVL tree is a self-balancing binary search tree, and it was the first such data structure to be invented. In an AVL tree, the heights of the two subtrees of any node differ by at most one. Lookup, insertion, and deletion all take O(log n) time in both the average and worst cases, where n is the number of nodes in the tree prior to the operation. Insertions and deletions may require the tree to be rebalanced by one or more tree rotations.
 
-First lets talk about the overall UML for the lab.  Look at the UML for the AVL Tree in the book and think of how you would change it to interface with the Lab 7 test harness.
+## Requirements
+You will need the files in this git repository to complete this assignment.
 
-![alt text](https://mjcleme.github.io/avluml.png)
+### Part 1 - Adding to the Tree  (20 Pts)
+* Implement the interface creating an AVL tree. Remember to rebalance when the subtree heights are off by more than 1 (i.e. the balance of a node is greater than 1 or less than -1).
 
-Then you will want to inherit from the interface files that are provided for you.  Given the NodeInterface.h file, you should create a Node.h file.  If you want to interface with the book code, you will want to inherit from both NodeInterface and AVLNode.
-```c++
-#pragma once
-#include "NodeInterface.h"
-#include "AVLNode.h"
-#include <iostream>
-using namespace std;
+### Part 2 - Remove from the tree  (30 Pts)
+* Properly remove from the AVL tree
+* Maintain balance of the tree
+* Be sure to follow the conventions outlined in the Requirement Notes to keep a "properly" constructed tree
 
-class Node : public NodeInterface, public AVLNode {
+### Part 3 - Add 1 - 20, then Remove the Root until Empty  (10 Pts)
+* Adds all integers 1 - 20 to the tree then calls remove on the root node until the tree is empty.  This will require your tree to perform several rebalances.
 
-public:
-	Node(const int& the_data, BTNode* left_val = NULL,
-          BTNode* right_val = NULL) : 
-    AVLNode(the_data, left_val, right_val) {}
-	Node() {}
-	virtual ~Node() {}
+### Part 4 - Border Cases  (10 Pts)
+* Like Part 4 of Lab 6, this will test out several border cases in your AVL tree.
 
-	int getData() const;
+### Part 5 - Add -50 - 50, then Remove -50 - 50  (20 Pts)
+* This will thoroughly test your tree by adding all integers -50 - 50, then removing all integers -50 - 50.
 
-	NodeInterface * getLeftChild() const;
+### Part 6 - Valgrind  (10 Pts Pass/Fail)
+* Run and pass Valgrind on your program to ensure that you have no memory leaks.
+* No UML diagram is required for this lab.
 
-	NodeInterface * getRightChild() const;
-
-	/*
-	* Returns the height of this node. The height is the number of nodes
-	* along the longest path from this node to a leaf.  While a conventional
-	* interface only gives information on the functionality of a class and does
-	* not comment on how a class should be implemented, this function has been
-	* provided to point you in the right direction for your solution.  For an
-	* example on height, see page 448 of the text book.
-	*
-	* @return the height of this tree with this node as the local root.
-	*/
-	int getHeight();
-};
-```
-Put stubs in Node.cpp for the functions you will implement in the lab
-```c++
-#include "Node.h"
-
-int Node::getData() const
-{
-    cout << "getData"<<endl;
-}
-
-NodeInterface * Node::getLeftChild() const
-{
-    cout << "getLeftChild"<<endl;
-}
-
-NodeInterface * Node::getRightChild() const
-{
-    cout << "getRightChild"<<endl;
-}
-
-	/*
-	* Returns the height of this node. The height is the number of nodes
-	* along the longest path from this node to a leaf.  While a conventional
-	* interface only gives information on the functionality of a class and does
-	* not comment on how a class should be implemented, this function has been
-	* provided to point you in the right direction for your solution.  For an
-	* example on height, see page 448 of the text book.
-	*
-	* @return the height of this tree with this node as the local root.
-	*/
-int Node::getHeight()
-{
-    cout << "getHeight"<<endl;
-}
-```
-You will also need to inherit from AVLInterface.h to create AVL.h.  Notice that I have included the AVL_Tree code from the book and included a data member "booktree" in case you want to use the book code in your implementation.
-```c++
-#pragma once
-
-#include "NodeInterface.h"
-#include "AVLInterface.h"
-#include "AVL_Tree.h"
-#include <iostream>
-
-using namespace std;
-
-class AVL : public AVLInterface {
-public:
-	AVL() {}
-	virtual ~AVL() {}
-
-	NodeInterface * getRootNode() const;
-
-	bool add(int data);
-
-	bool remove(int data);
-
-	void clear();
-private:
-    AVL_Tree booktree;
-};
-```
-Now start filling in the functions for the interface.  Several functions have not been completed in the book code, so you will have to complete them if you choose to use the book code.  If you use your BST lab code, you will need to implement the rotate code along with rebalancing code.
+## Requirement Notes
+* There are multiple correct methods for rebalancing nodes in an AVL tree; each method may result in a unique tree. Some conventions will need to be used to ensure that your tree properly matches ours. When rebalancing, refer to [this simulation](https://www.cs.usfca.edu/~galles/visualization/AVLtree.html) for more detailed information on proper balancing.
+* You should remove nodes from the AVL tree in the same manner used for the BST.
+* Remember to disallow duplicate entries and handle the case when the element to be removed is not in the tree
+* You are required to write a separate '.h' and '.cpp' for every class you implement.
+* This lab is much easier to implement if you follow the algorithms presented in the course text on pages 634-642.
