@@ -21,7 +21,7 @@ public:
 	*
 	* @return the root node for this tree.
 	*/
-	NodeInterface * getRootNode() const;
+	NodeInterface * getRootNode() const; //DONE
 
 	/*
 	* Attempts to add the given int to the AVL tree
@@ -30,7 +30,7 @@ public:
 	* @return true if added
 	* @return false if unsuccessful (i.e. the int is already in tree)
 	*/
-	bool add(int data);
+	bool add(int data); //DONE
 
 	/*
 	* Attempts to remove the given int from the AVL tree
@@ -39,16 +39,20 @@ public:
 	* @return true if successfully removed
 	* @return false if remove is unsuccessful(i.e. the int is not in the tree)
 	*/
-	bool remove(int data);
+	bool remove(int data); //DONE
 
 	/*
 	* Removes all nodes from the tree, resulting in an empty tree.
 	*/
-	void clear();
-	bool insert(Node *&T, int val);
-	bool removeNode(Node *&T, int val);
-	int traverseTree(Node* T);
-	void deleteNodes(Node *T);
-	void rotateLeft(Node *T);
-	void rotateRight(Node *T);
+	void clear(); //DONE
+	bool insert(Node *&T, int val); //DONE
+	bool removeNode(Node *&T, int val); //DONE
+	int traverseTree(Node* T); //DONE
+	void deleteNodes(Node *T); //DONE
+	void rotateLeft(Node *&T); //DONE
+	void rotateRight(Node *&T); //DONE
+	int getBalance(Node *T); //DONE
+	void rebalance(Node *T); //DONE
+	int getHeight(Node *T);
+	void updateHeight();
 };

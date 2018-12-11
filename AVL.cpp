@@ -31,7 +31,6 @@ using namespace std;
 	* @return false if remove is unsuccessful(i.e. the int is not in the tree)
 	*/
 	bool AVL::remove(int val) {
-		cout << "remove" << endl;
 		return removeNode(root, val);
 	}
 	/*
@@ -123,44 +122,82 @@ using namespace std;
 		delete T;
 		return;
 	}
-	/*
-	void AVL::rotateLeft(Node *T) {
-		cout << "left rotate" << endl;
-		Node *tempNode = T->rightChild;
-		if (tempNode->parent != NULL) {
-			if (tempNode->parent->leftChild == T) {
-				tempNode->parent->leftChild = tempNode;
-			}
-			else {
-				tempNode->parent->rightChild = tempNode;
-			}
+	int AVL::getBalance(Node *T) {
+		int leftHeight;
+		int rghtHeight;
+		
+		if (T->leftChild) {
+			leftHeight = T->leftChild->height+1;
 		}
-		T->rightChild = tempNode->leftChild;
-		if (T->rightChild != NULL) {
-			T->rightChild->parent = T;
+		else {
+			leftHeight = 0;
 		}
-		T->parent = tempNode;
-		tempNode->leftChild = T;
-		return;
+		if (T->rightChild) {
+			rghtHeight = T->rightChild->height + 1;
+		}
+		else {
+			rghtHeight = 0;
+		}
+		return (rghtHeight - leftHeight);
 	}
-	void AVL::rotateRight(Node *T) {
-		cout <<"right rotate" << endl;
-		Node *tempNode = T->leftChild;
-		tempNode->parent = T->parent;
-		if (tempNode->parent != NULL) {
-			if (tempNode->parent->leftChild == T) {
-				tempNode->parent->leftChild = tempNode;
+	void AVL::rebalance(Node *T) {
+		int balance = getBalance(T);
+		
+		if (balance < -1) {
+			if(getBalance(T->leftChild) < 1) {//LEFT LEFT
+				rotateRight(T);
 			}
-			else {
-				temNode->parent->rightChild = tempNode;
+			else { //LEFT RIGHT
+				rotateLeft(T->leftChild);
+				rotateRight(T);
 			}
 		}
-		T->rightChild = tempNode->leftChild;
-		if (T->leftChild != NULL) {
-			T->left->parent = T;
+		if (balance > 1) { //RIGHT RIGHT
+			if (getBalance(T->rightChild) > -1) {
+				rotateLeft(T);
+			} 
+			else { //RIGHT LEFT
+				rotateRight(T->rightChild);
+				rotateLeft(T);
+			}
 		}
-		T->parent = tempNode;
-		tempNode->rightChild = T;
-		return;
 	}
-	*/
+	//If diff > 1 rotate left
+	//If diff < -1 rotate right
+	
+	void AVL::rotateLeft(Node *&T) {
+		Node *prevNode = T;
+		Node *newNode = T->rightChild;
+		T = newNode;
+		prevNode->rightChild = newNode->leftChild;
+		newNode->leftChild = prevNode;
+		prevNode->updateHeight();
+		newNode->updateHeight();
+	}
+	void AVL::rotateRight(Node *&T) {
+		Node *prevNode = T;
+		Node *newNode = T->leftChild;
+		T = newNode;
+		prevNode->leftChild = newNode->rightChild;
+		newNode->rightChild = prevNode;
+		prevNode->updateHeight();
+		newNode->updateHeight();
+	}
+	void AVL::updateHeight() {
+		int lft = getHeight(T->leftChild);
+		int rght = getHeight(T->rightChild);
+		if (lft > rght) {
+			height = lft + 1;
+		}
+		else {
+			height = rght + 1;
+		}
+	}
+	int getHeight (Node* T) {
+		if (T == NULL) {
+			return -1;
+		}
+		else {
+			return T->height;
+		}
+	}
