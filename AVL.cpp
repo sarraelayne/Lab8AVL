@@ -48,6 +48,9 @@ using namespace std;
 	        T->height = 0;
 	        return true;
 	    }
+	    if (T->val == val) {
+	    	return false;
+	    }
 	    if (T->val < val) {
 	    	bool nodeBool = insert(T->rightChild, val);
 	    	if (nodeBool == true) {
@@ -83,7 +86,6 @@ using namespace std;
 	bool AVL::removeNode(Node *&T, int val) {
 		bool removeOne;
 		bool removeTwo;
-		cout << "in remove" << endl;
 		if (T == NULL) {
 			return false;
 		}
@@ -108,6 +110,7 @@ using namespace std;
 			Node* tempNode = T->rightChild;
 			delete T;
 			T = tempNode;
+			cout << "rebalance3" << endl;
 			rebalance(T, val);
 			return true;
 		}
@@ -115,6 +118,7 @@ using namespace std;
 			Node* tempNode = T->leftChild;
 			delete T;
 			T = tempNode;
+			cout << "rebalance4" << endl;
 			rebalance(T, val);
 			return true;
 		}
@@ -149,22 +153,18 @@ using namespace std;
 		return;
 	}
 	bool AVL::rebalance(Node *&T, int val) {
-		cout << "in rebalance" << endl;
 		if(T == NULL) {
 			return false;
 		}
-		if (T->getBalance() < -1) {
-			rotateRight(T);
-		}
-		else if (T->getBalance() > 1) {
+		if (T->getBalance() > 1) {
 			rotateLeft(T);
 		}
-		cout << "after rotates" << endl;
+		else if (T->getBalance() < -1) {
+			rotateRight(T);
+		}
 		rebalance(T->leftChild, val);
 		rebalance(T->rightChild, val);
 	}
-	//If diff > 1 rotate left
-	//If diff < -1 rotate right
 	
 	void AVL::rotateLeft(Node *&T) {
 		cout << "rotate left" << endl;
@@ -173,11 +173,9 @@ using namespace std;
 		}
 		Node *prevNode = T;
 		Node *newNode = T->rightChild;
-		T = newNode;
 		prevNode->rightChild = newNode->leftChild;
 		newNode->leftChild = prevNode;
-		updateHeight(prevNode);
-		updateHeight(newNode);
+		T = newNode;
 	}
 	void AVL::rotateRight(Node *&T) {
 		cout << "rotate right" << endl;
@@ -186,27 +184,7 @@ using namespace std;
 		}
 		Node *prevNode = T;
 		Node *newNode = T->leftChild;
-		T = newNode;
 		prevNode->leftChild = newNode->rightChild;
 		newNode->rightChild = prevNode;
-		updateHeight(prevNode);
-		updateHeight(newNode);
-	}
-	void AVL::updateHeight(Node *&T) {
-		int lft = getHeight(T->leftChild);
-		int rght = getHeight(T->rightChild);
-		if (lft > rght) {
-			T->height = lft + 1;
-		}
-		else {
-			T->height = rght + 1;
-		}
-	}
-	int AVL::getHeight (Node* T) {
-		if (T == NULL) {
-			return -1;
-		}
-		else {
-			return T->height;
-		}
+		T = newNode;
 	}

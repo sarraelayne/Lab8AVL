@@ -52,6 +52,4 @@ public:
 	void rotateLeft(Node *&T);//DONE?
 	void rotateRight(Node *&T);//DONE?
 	bool rebalance(Node *&T, int val);
-	int getHeight(Node *T); //DONE
-	void updateHeight(Node*&T); //DONE
 };
