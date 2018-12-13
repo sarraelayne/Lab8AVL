@@ -11,7 +11,6 @@ using namespace std;
         clear();
     }
     NodeInterface * AVL::getRootNode() const {
-	    cout << "getRootNode"<<endl;
 	    return root;
 	}
 
@@ -22,7 +21,7 @@ using namespace std;
 	* @return false if unsuccessful (i.e. the int is already in tree)
 	*/
 	bool AVL::add(int val) {
-	    return insert(root, val);	
+	    insert(root, val);	
 	}
 	/*
 	* Attempts to remove the given int from the BST tree
@@ -63,7 +62,7 @@ using namespace std;
 	    	}
 	        return nodeBool;
 	    }
-	    if (val < T->val) {
+	    else if (T->val > val) {
 	    	bool nodeBool2 = insert(T->leftChild, val);
 	    	if (nodeBool2 == true) {
 	    		if (T->getBalance() > 1) {
@@ -171,20 +170,31 @@ using namespace std;
 		if (T == NULL) {
 			return;
 		}
-		Node *prevNode = T;
-		Node *newNode = T->rightChild;
-		prevNode->rightChild = newNode->leftChild;
-		newNode->leftChild = prevNode;
-		T = newNode;
+		if (T->rightChild->getBalance() <= -1) {
+			rotateRightLeft(T->rightChild);
+		}
+		rotateLeftRight(T);
 	}
+	
 	void AVL::rotateRight(Node *&T) {
 		cout << "rotate right" << endl;
 		if (T == NULL) {
 			return;
 		}
-		Node *prevNode = T;
+		if (T->leftChild->getBalance() >= 1) {
+			rotateLeftRight(T->leftChild);
+		}
+		rotateRightLeft(T);
+	}
+	void AVL::rotateLeftRight(Node *&T) {
+		Node * newNode = T->rightChild;
+		T->rightChild = newNode->leftChild;
+		newNode->leftChild = T;
+		T = newNode;
+	}
+	void AVL::rotateRightLeft(Node* &T) {
 		Node *newNode = T->leftChild;
-		prevNode->leftChild = newNode->rightChild;
-		newNode->rightChild = prevNode;
+		T->leftChild = newNode->rightChild;
+		newNode->rightChild = T;
 		T = newNode;
 	}

@@ -9,7 +9,6 @@ class Node : public NodeInterface {
 public:
     Node *leftChild;
     Node *rightChild;
-    Node *parent;
     int val;
     int height;
     
@@ -17,7 +16,7 @@ public:
 	    val = value;
 	    leftChild = NULL;
 	    rightChild = NULL;
-	    parent = NULL;
+	    height = 0;
 	}
 	~Node() {}
 
