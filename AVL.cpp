@@ -171,8 +171,8 @@ using namespace std;
 		T = newNode;
 		prevNode->rightChild = newNode->leftChild;
 		newNode->leftChild = prevNode;
-		prevNode->updateHeight();
-		newNode->updateHeight();
+		updateHeight(prevNode);
+		updateHeight(newNode);
 	}
 	void AVL::rotateRight(Node *&T) {
 		Node *prevNode = T;
@@ -180,20 +180,20 @@ using namespace std;
 		T = newNode;
 		prevNode->leftChild = newNode->rightChild;
 		newNode->rightChild = prevNode;
-		prevNode->updateHeight();
-		newNode->updateHeight();
+		updateHeight(prevNode);
+		updateHeight(newNode);
 	}
-	void AVL::updateHeight() {
+	void AVL::updateHeight(Node *&T) {
 		int lft = getHeight(T->leftChild);
 		int rght = getHeight(T->rightChild);
 		if (lft > rght) {
-			height = lft + 1;
+			T->height = lft + 1;
 		}
 		else {
-			height = rght + 1;
+			T->height = rght + 1;
 		}
 	}
-	int getHeight (Node* T) {
+	int AVL::getHeight (Node* T) {
 		if (T == NULL) {
 			return -1;
 		}

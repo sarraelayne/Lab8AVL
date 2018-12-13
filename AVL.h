@@ -54,5 +54,5 @@ public:
 	int getBalance(Node *T); //DONE
 	void rebalance(Node *T); //DONE
 	int getHeight(Node *T);
-	void updateHeight();
+	void updateHeight(Node*&T);
 };
