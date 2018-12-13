@@ -46,13 +46,12 @@ public:
 	*/
 	void clear(); //DONE
 	bool insert(Node *&T, int val); //DONE
-	bool removeNode(Node *&T, int val); //DONE
-	int traverseTree(Node* T); //DONE
+	bool removeNode(Node *&T, int val);
+	Node* traverseTree(Node* &T); //DONE
 	void deleteNodes(Node *T); //DONE
-	void rotateLeft(Node *&T); //DONE
-	void rotateRight(Node *&T); //DONE
-	int getBalance(Node *T); //DONE
-	void rebalance(Node *T); //DONE
-	int getHeight(Node *T);
-	void updateHeight(Node*&T);
+	void rotateLeft(Node *&T);//DONE?
+	void rotateRight(Node *&T);//DONE?
+	bool rebalance(Node *&T, int val);
+	int getHeight(Node *T); //DONE
+	void updateHeight(Node*&T); //DONE
 };

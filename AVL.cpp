@@ -31,7 +31,9 @@ using namespace std;
 	* @return false if remove is unsuccessful(i.e. the int is not in the tree)
 	*/
 	bool AVL::remove(int val) {
-		return removeNode(root, val);
+		bool removeTrue = removeNode(root, val);
+		rebalance(root, val);
+		return removeTrue;
 	}
 	/*
 	* Removes all nodes from the tree, resulting in an empty tree.
@@ -43,71 +45,95 @@ using namespace std;
 	bool AVL::insert(Node *&T, int val) {
 		if (T == NULL) {
 	        T = new Node(val);
+	        T->height = 0;
 	        return true;
 	    }
 	    if (T->val < val) {
-	        return insert(T->rightChild, val);
+	    	bool nodeBool = insert(T->rightChild, val);
+	    	if (nodeBool == true) {
+	    		if(T->getBalance() > 1) {
+	    			rotateLeft(T);
+	    		}
+	    		if (T->getBalance() < -1) {
+	    			rotateRight(T);
+	    		}
+	    	}
+	        return nodeBool;
 	    }
 	    if (val < T->val) {
-	        return insert(T->leftChild, val);
+	    	bool nodeBool2 = insert(T->leftChild, val);
+	    	if (nodeBool2 == true) {
+	    		if (T->getBalance() > 1) {
+	    			rotateLeft(T);
+	    		}
+	    		if(T->getBalance() < -1) {
+	    			rotateRight(T);
+	    		}
+	    	}
+	        return nodeBool2;
+	    }
+	    if (T->getBalance() > 1) {
+	    	rotateLeft(T);
+	    }
+	    if (T->getBalance() < -1) {
+	    	rotateRight(T);
 	    }
 	    return false;
 	}
 	bool AVL::removeNode(Node *&T, int val) {
+		bool removeOne;
+		bool removeTwo;
+		cout << "in remove" << endl;
 		if (T == NULL) {
 			return false;
 		}
-		if (val == T->val) {
-			if(T->leftChild == NULL && T->rightChild == NULL) {
-				Node* tempNode = T;
-				T = NULL;
-				delete tempNode;
-				return true;
-			}
-			if (T->rightChild != NULL && T->leftChild == NULL) {
-				Node* tempNode = T;
-				T = T->rightChild;
-				delete tempNode;
-				return true;
-			}
-			if (T->rightChild == NULL && T->leftChild != NULL) {
-				Node* tempNode = T;
-				T = T->leftChild;
-				delete tempNode;
-				return true;
-			}
-			else {
-				T->val = traverseTree(T->leftChild);
-				removeNode(T->leftChild, T->val);
-			}
+		if (val < T->val) {
+			removeOne = removeNode(T->leftChild, val);
+			cout << "rebalance1" << endl;
+			rebalance(T, val);
+			return removeOne;
 		}
-		else if (val < T->val) {
-			removeNode(T->leftChild, val);
+		if (val > T->val) {
+			removeTwo = removeNode(T->rightChild, val);
+			cout << "rebalance2" << endl;
+			rebalance(T, val);
+			return removeTwo;
 		}
-		else {
-			removeNode(T->rightChild, val);
+		if(T->leftChild == NULL && T->rightChild == NULL) {
+			delete T;
+			T = NULL;
+			return true;
 		}
+		if (T->rightChild != NULL && T->leftChild == NULL) {
+			Node* tempNode = T->rightChild;
+			delete T;
+			T = tempNode;
+			rebalance(T, val);
+			return true;
+		}
+		if (T->rightChild == NULL && T->leftChild != NULL) {
+			Node* tempNode = T->leftChild;
+			delete T;
+			T = tempNode;
+			rebalance(T, val);
+			return true;
+		}
+		Node* tempNode = traverseTree(T->leftChild);
+		tempNode->leftChild = T->leftChild;
+		tempNode->rightChild = T->rightChild;
+		delete T;
+		T = tempNode;
+		return true;
 	}
-	int AVL::traverseTree(Node *T) {
-		if (T == NULL) {
-			return -1;
+	Node* AVL::traverseTree(Node *&T) {
+		if (T->rightChild == NULL) {
+			Node * tempNode = T;
+			T = T->leftChild;
+			return tempNode;
 		}
-		int currVal = T->val;
-		Node *leftChild = T->leftChild;
-		Node *rightChild = T->rightChild;
-		if (leftChild != NULL) {
-			int left = traverseTree(leftChild);
-			if (left > currVal) {
-				currVal = left;
-			}
-		}
-		if (rightChild != NULL) {
-			int right = traverseTree(rightChild);
-			if (right > currVal) {
-				currVal = right;
-			}
-		}
-		return currVal;
+		Node *tempNode = traverseTree(T->rightChild);
+		rebalance(T, T->val);
+		return tempNode;
 	}
 	void AVL::deleteNodes(Node *T) {
 		if (T == NULL) {
@@ -122,50 +148,29 @@ using namespace std;
 		delete T;
 		return;
 	}
-	int AVL::getBalance(Node *T) {
-		int leftHeight;
-		int rghtHeight;
-		
-		if (T->leftChild) {
-			leftHeight = T->leftChild->height+1;
+	bool AVL::rebalance(Node *&T, int val) {
+		cout << "in rebalance" << endl;
+		if(T == NULL) {
+			return false;
 		}
-		else {
-			leftHeight = 0;
+		if (T->getBalance() < -1) {
+			rotateRight(T);
 		}
-		if (T->rightChild) {
-			rghtHeight = T->rightChild->height + 1;
+		else if (T->getBalance() > 1) {
+			rotateLeft(T);
 		}
-		else {
-			rghtHeight = 0;
-		}
-		return (rghtHeight - leftHeight);
-	}
-	void AVL::rebalance(Node *T) {
-		int balance = getBalance(T);
-		
-		if (balance < -1) {
-			if(getBalance(T->leftChild) < 1) {//LEFT LEFT
-				rotateRight(T);
-			}
-			else { //LEFT RIGHT
-				rotateLeft(T->leftChild);
-				rotateRight(T);
-			}
-		}
-		if (balance > 1) { //RIGHT RIGHT
-			if (getBalance(T->rightChild) > -1) {
-				rotateLeft(T);
-			} 
-			else { //RIGHT LEFT
-				rotateRight(T->rightChild);
-				rotateLeft(T);
-			}
-		}
+		cout << "after rotates" << endl;
+		rebalance(T->leftChild, val);
+		rebalance(T->rightChild, val);
 	}
 	//If diff > 1 rotate left
 	//If diff < -1 rotate right
 	
 	void AVL::rotateLeft(Node *&T) {
+		cout << "rotate left" << endl;
+		if (T == NULL) {
+			return;
+		}
 		Node *prevNode = T;
 		Node *newNode = T->rightChild;
 		T = newNode;
@@ -175,6 +180,10 @@ using namespace std;
 		updateHeight(newNode);
 	}
 	void AVL::rotateRight(Node *&T) {
+		cout << "rotate right" << endl;
+		if (T == NULL) {
+			return;
+		}
 		Node *prevNode = T;
 		Node *newNode = T->leftChild;
 		T = newNode;

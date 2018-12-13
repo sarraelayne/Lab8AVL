@@ -59,6 +59,36 @@ public:
 	* @return the height of this tree with this node as the local root.
 	*/
 	int getHeight() {
-	    return height;
+		int leftHeight = 0;
+		int rghtHeight = 0;
+		if (leftChild != NULL) {
+			leftHeight = leftChild->getHeight();
+		}
+		if (rightChild != NULL) {
+			rghtHeight = rightChild->getHeight();
+		}
+		if (leftHeight > rghtHeight) {
+			return leftHeight + 1;
+		}
+	    else {
+	    	return rghtHeight + 1;
+	    }
+	}
+	int getBalance() {
+		int rghtHeight;
+		int leftHeight;
+		if (rightChild != NULL) {
+			rghtHeight = rightChild->getHeight();
+		}
+		else {
+			rghtHeight = 0;
+		}
+		if (leftChild != NULL) {
+			leftHeight = leftChild->getHeight();
+		}
+		else {
+			leftHeight = 0;
+		}
+		return rghtHeight - leftHeight;
 	}
 };
